@@ -26,10 +26,11 @@
 				<ul>
 					<li><a href="/client.html">festivoice.netの使い方</a></li>
 					<li><a href="/server.html">festivoiceサーバーの導入</a></li>
+					<li><a href="http://github.com/frsyuki/festivoice/tree/master">ソースコード</a></li>
 				</ul>
 			</div>
 			<ul id="links">
-				<li><a href="http://www.partty.org/">Partty!.org</a></li>
+				<li><a href="http://partty.org/">Partty!.org</a></li>
 			</ul>
 		</div>
 		<div id="content" class="clearfix">
