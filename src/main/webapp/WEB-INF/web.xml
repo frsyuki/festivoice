@@ -1,0 +1,69 @@
+<!DOCTYPE web-app PUBLIC
+	"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/dtd/web-app_2_3.dtd" >
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+
+	<servlet>
+		<servlet-name>WebServerLoader</servlet-name>
+		<servlet-class>net.festivoice.WebServerLoader</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>WebStatusView</servlet-name>
+		<servlet-class>net.festivoice.WebStatusView</servlet-class>
+		<init-param>
+			<param-name>contentType</param-name>
+			<param-value>text/html; charset=UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>style</param-name>
+			<param-value>/index.xsl</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet>
+		<servlet-name>WebStart</servlet-name>
+		<servlet-class>net.festivoice.WebStart</servlet-class>
+		<init-param>
+			<param-name>contentType</param-name>
+			<param-value>application/x-java-jnlp-file</param-value>
+		</init-param>
+		<init-param>
+			<param-name>template</param-name>
+			<param-value>/jnlp.xsl</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>WebStatusView</servlet-name>
+		<url-pattern>/index.html</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>WebStart</servlet-name>
+		<url-pattern>/start/*</url-pattern>
+	</servlet-mapping>
+
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html; charset=UTF-8</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>jnlp</extension>
+		<mime-type>application/x-java-jnlp-file</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>gz</extension>
+		<mime-type>application/x-gzip</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>zip</extension>
+		<mime-type>application/zip</mime-type>
+	</mime-mapping>
+</web-app>
+

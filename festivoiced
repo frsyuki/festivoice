@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+rootdir="$(dirname "$0")"
+webroot="${rootdir}/webapp"
+webport_=8080
+webport=$webport_
+streamPort_=11100
+streamPort=$streamPort_
+timeoutInterval=1000
+timeoutLimit=2
+deploy=""
+custom=""
+
+function usage()
+{
+	echo "usage: $(basename "$0") [options]"
+	echo "  -p PORT=$webport_  : web port"
+	echo "  -r PATH       : web root"
+	echo "  -c PORT=$streamPort_ : streaming port"
+	echo "  -s MSEC=1000  : timeout step interval"
+	echo "  -t TIMEOUT=2  : timeout steps"
+	echo ""
+	echo "usage: $(basename "$0") -D PATH"
+	echo "  -D PATH       : deploy web root to the path"
+	echo ""
+	echo "usage: $(basename "$0") -C <server.name.com> [-p webport] [-c streaming port]"
+	echo "  -C <server.name.com>: create custom server package"
+	exit 1
+}
+
+while getopts ":r:p:c:s:t:D:C:" opt; do
+case $opt in
+	r) webroot="$OPTARG" ;;
+	p) webport="$OPTARG" ;;
+	c) streamPort="$OPTARG" ;;
+	s) timeoutInterval="$OPTARG" ;;
+	t) timeoutLimit="$OPTARG" ;;
+	D) deploy="$OPTARG" ;;
+	C) custom="$OPTARG" ;;
+	\?)	usage ;;
+esac
+done
+shift $(($OPTIND - 1))
+
+if [ -n "$1" ]; then
+	usage
+fi
+
+if [ -n "$deploy" ]; then
+	cp -R "$rootdir/webapp" "$deploy"
+	exit 0
+fi
+
+if [ -n "$custom" ];then
+	cp -R "$rootdir" "/tmp/$custom"
+	mv "/tmp/$custom" "$custom"
+
+	tar -C $custom -xvf "$custom/webapp/pkg/festivoice.net.tar.gz"
+	rm -f "$custom/webapp/pkg/festivoice.net.tar.gz"
+
+	web="$custom/webapp"
+
+	for file in "$web/pkg/festivoice.net.jnlp" "$web/jnlp.xsl" "$custom/festivoiced" "$custom/festivoice.net"; do
+		sed -i .tmp "s#festivoice.net.jnlp#$custom.jnlp#g" "$file"
+		sed -i .tmp "s#stream.festivoice.net#$custom#g" "$file"
+		sed -i .tmp "s#$webport_#$webport#g" "$file"
+		sed -i .tmp "s#$streamPort_#$streamPort#g" "$file"
+		sed -i .tmp "s#>festivoice.net</title#>$custom</title#g" "$file"
+		if [ "$webport" = "80" ];then
+			sed -i .tmp "s#http://festivoice.net/#http://$custom/#g" "$file"
+		else
+			sed -i .tmp "s#http://festivoice.net/#http://$custom:$webport/#g" "$file"
+		fi
+		rm -f "$file.tmp"
+	done
+
+	for file in "$web/index.xsl" "$web/client.html" "$web/server.html"; do
+		sed -i .tmp "s#festivoice.net#$custom#g" "$file"
+		rm -f "$file.tmp"
+	done
+
+	mv "$custom/festivoice.net" "$custom/$custom"
+	tar -C "$custom" -czvf "$custom.tar.gz" "$custom"
+	rm -f "$custom/$custom"
+	cp -f "$custom.tar.gz" "$web/pkg/"
+
+	mv "$web/pkg/festivoice.net.jnlp" "$web/pkg/$custom.jnlp"
+
+	echo "$custom.tar.gz"
+
+	exit 0
+fi
+
+classpath="$rootdir/webapp/pkg/festivoice.jar:$rootdir/lib/winstone-lite.jar"
+if [ -n "$CLASSPATH" ]; then
+	classpath="$classpath:$CLASSPATH"
+fi
+
+java -Dfile.encoding=UTF-8 -classpath "$classpath" \
+	-DstreamPort="$streamPort" \
+	-DtimeoutInterval="$timeoutInterval" \
+	-DtimeoutLimit="$timeoutLimit" \
+	winstone.Launcher \
+	--webroot="$webroot" \
+	--httpPort="$webport"
+

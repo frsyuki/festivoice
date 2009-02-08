@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+	<meta content="text/css" http-equiv="content-style-type"/>
+	<meta content="text/javascript" http-equiv="content-script-type"/>
+	<link rel="stylesheet" type="text/css" href="/style.css"/>
+	<title>festivoice client</title>
+</head>
+<body>
+	<div id="header">
+		<h1><a href="/"><span id="title">festivoice</span></a></h1>
+		<div id="about">
+			<h2>音声チャットの始め方</h2>
+			<p>festivoice.netの使い方を紹介します。</p>
+		</div>
+		<ul id="links">
+			<li><a href="http://www.partty.org/">Partty!.org</a></li>
+		</ul>
+	</div>
+	<div id="content">
+		<h3>festivoiceとは？</h3>
+		<div class="doc">
+			<p><strong>festivoice（フェスティボイス）</strong>を使うと、多人数の音声チャットを始められます。festivoiceソフトウェアを使って好きなチャンネルに参加すると、同じチャンネルに参加している人全員で音声チャットが始められます。</p>
+		</div>
+
+		<h3>チャンネルに参加する</h3>
+		<div class="doc">
+			<p><a href="/pkg/festivoice.net.jnlp">festivoiceソフトウェア</a>の動作にはJavaソフトウェアが必要です：<a href="http://www.java.com/">Javaソフトウェアのダウンロード</a></p>
+			<p>新しいチャンネルを作るには、<a href="/">トップページ</a>の下部にある<strong>ここにチャンネル名を入力</strong>という入力欄に好きなチャンネル名を入力して、<strong>新しく始める</strong>ボタンをクリックしてください（チャンネル名には英数字しか使えません）。</p>
+			<p>既存のチャンネルに参加するには、<a href="/">トップページ</a>に表示されているチャンネル一覧から参加したいチャンネルを選んで、リンクをクリックしてください。</p>
+		</div>
+
+		<h3>コマンドライン版クライアント</h3>
+		<div class="doc">
+			<p>コマンドライン版クライアントはJavaソフトウェアとマイクが使える環境であればどこでも動作します。</p>
+			<p><a href="/pkg/festivoice.net.tar.gz">コマンドライン版festivoiceソフトウェア</a>をダウンロードして展開すると、中にシェルスクリプトが入っています。以下のように引数にチャンネル名を指定して実行してください。</p>
+<pre>./festivoice.net mychannel</pre>
+			<p>以下のようなaliasを設定しておくと便利です：</p>
+<pre><span class="comment"># bashの場合(~/.bashrc):</span>
+alias festivoice.net="/ダウンロード/した/ディレクトリ/festivoice.net"
+<span class="comment"># tcshの場合(~/.cshrc):</span>
+alias festivoice.net "/ダウンロード/した/ディレクトリ/festivoice.net"</pre>
+		</div>
+
+		<h3>festivoiceリンク</h3>
+		<div class="doc">
+			<p>以下のようなURLへのリンクをブログやWebページに貼り付けると、リンクをクリックするだけですぐに音声チャットが始まるようにすることができます。</p>
+			<pre>http://festivoice.net/start/チャンネル名</pre>
+		</div>
+	</div>
+	<div id="footer">
+		<p><span id="copyright">Copyright (C) 2009 festivoice developer team. All Rights Reserved.</span><a id="staff" href="staff.html">Staff</a></p>
+	</div>
+</body>
+</html>

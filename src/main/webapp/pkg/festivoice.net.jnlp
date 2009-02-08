@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.5+" codebase="http://festivoice.net/start/" href="../pkg/festivoice.net.jnlp">
+
+	<information>
+		<title>festivoice.net</title>
+		<vendor>festivoice developer team</vendor>
+		<shortcut online="true">
+			<desktop/>
+			<menu submenu="festivoice.net"/>
+		</shortcut>
+	</information>
+
+	<security>
+		<all-permissions />
+	</security>
+
+	<resources>
+		<j2se version="1.5+"/>
+		<jar href="../pkg/festivoice.jar"/>
+	</resources>
+
+	<application-desc main-class="festivoice.net">
+		<argument>-G</argument>
+		<argument>stream.festivoice.net</argument>
+		<argument>11100</argument>
+		<argument>-</argument>
+		<argument>-</argument>
+	</application-desc>
+
+	<update check="always" policy="always" />
+</jnlp>
+

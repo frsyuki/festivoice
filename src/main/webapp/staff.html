@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+	<meta content="text/css" http-equiv="content-style-type"/>
+	<meta content="text/javascript" http-equiv="content-script-type"/>
+	<link rel="stylesheet" type="text/css" href="/style.css"/>
+	<script>
+	// <![CDATA[
+		function writeAddress(name, host) {
+			document.write(String.fromCharCode.apply(this,name));
+			document.write("<span class='address_at' ><span class='address_hd'>　~at~　</span></span>"+String.fromCharCode.apply(this,host));
+		}
+	// ]]>
+	</script>
+	<title>festivoice staff</title>
+</head>
+<body>
+	<div id="header">
+		<h1><a href="/"><span id="title">festivoice</span></a></h1>
+		<div id="about">
+			<h2>Core Developers</h2>
+			<h3><a href="http://d.hatena.ne.jp/viver/">FURUHASHI Sadayuki</a></h3>
+			<p>Project leader. Server, client and web compoments. <span class="address">(<script>writeAddress([0146, 0162, 0163, 0171, 0165, 0153, 0151], [117, 115, 101, 114, 115, 46, 115, 111, 117, 114, 99, 101, 102, 111, 114, 103, 101, 46, 106, 112]);</script>)</span></p>
+			<h3><a href="http://d.hatena.ne.jp/obfuscation/">KASHIHARA Shuzo</a></h3>
+			<p>Streaming, client and server components. <span class="address">(<script>writeAddress([0163, 0165, 0155, 0141, 0156, 056, 0157, 0162, 0145, 0147, 0141, 056, 0167, 0141, 0162, 0165, 0153, 0141, 0164, 0164, 0141], [103, 109, 97, 105, 108, 46, 99, 111, 109]);</script>)</span></p>
+			<h3><a href="http://yasuharu.net/">SHIBATA Yasuharu</a></h3>
+			<p>Sound, GUI and 1-click start components. <span class="address">(<script>writeAddress([0141, 0144, 0155, 0151, 0156], [109, 97, 105, 108, 46, 121, 97, 115, 117, 104, 97, 114, 117, 46, 110, 101, 116]);</script>)</span></p>
+
+			<address>Contact us: <script>writeAddress([0144, 0145, 0166, 0155, 0154], [109, 97, 105, 108, 46, 102, 101, 115, 116, 105, 118, 111, 105, 99, 101, 46, 110, 101, 116]);</script></address>
+
+			<h2 class="cont">Contributors</h2>
+			<h3>YOU</h3>
+			<p>Customizing, testing and bug reporting</p>
+		</div>
+		<ul id="links">
+			<li><a href="http://www.partty.org/">Partty!.org</a></li>
+		</ul>
+	</div>
+	<div id="footer">
+		<p><span id="copyright">Copyright (C) 2009 festivoice developer team. All Rights Reserved.</span><a id="staff" href="staff.html">Staff</a></p>
+	</div>
+</body>
+</html>

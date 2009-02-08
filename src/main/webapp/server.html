@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+	<meta content="text/css" http-equiv="content-style-type"/>
+	<meta content="text/javascript" http-equiv="content-script-type"/>
+	<link rel="stylesheet" type="text/css" href="/style.css"/>
+	<title>festivoice server</title>
+</head>
+<body>
+	<div id="header">
+		<h1><a href="/"><span id="title">festivoice</span></a></h1>
+		<div id="about">
+			<h2>festivoiceサーバーの導入</h2>
+			<p>festivoiceのサーバーをノートPCや会社のサーバーに導入することができます。</p>
+			<p>テキストチャットを超える表現力によるコミュニケーションの質の向上、チーム開発の環境改善、VPNを介したリモート音声会議に最適です。</p>
+		</div>
+		<ul id="links">
+			<li><a href="http://www.partty.org/">Partty!.org</a></li>
+		</ul>
+	</div>
+	<div id="content">
+		<h3>動作環境</h3>
+		<div class="doc">
+			<p>festivoiceサーバーは<a href="http://www.java.com/">Javaソフトウェア</a>が動作するすべてのプラットフォームで動作します。</p>
+			<p>起動用のスクリプトはシェルスクリプトで書かれているため、UNIX系のOSまたはCygwinをインストールしたWindowsではスクリプトを使って起動できます。</p>
+		</div>
+
+		<h3>ダウンロードと設定</h3>
+		<div class="doc">
+			<p>まずfestivoiceサーバーパッケージをダウンロードして展開してください。</p>
+			<p><a href="/pkg/festivoiced-0.1.0.tar.gz">festivoiceサーバーパッケージ</a></p>
+			<p>Webインタフェースを使う場合は、以下のようにコマンドを実行してURLリンクのサーバー名を変更したカスタムパッケージを作成してください。</p>
+<pre><span class="comment"># URLリンクの変更</span>
+./festivoiced -C server.name.or.ip.com -p 8080 -c 11100
+cd server.name.or.ip.com</pre>
+			<p>上記のコマンドを実行すると同時にカスタマイズされたコマンドライン版クライアントも作成されます。これをユーザーに配布してください。<p>
+<pre><span class="comment"># クライアントパッケージの配布</span>
+cp server.name.or.ip.com.tar.gz /共有されたディレクトリ/
+</pre>
+			<p>最後に<strong>festivoiced</strong>スクリプトを使ってサーバーを起動してください。デフォルトでは<strong>8080/tcp</strong>と<strong>11100/udp</strong>の2つのポートを待ち受けます。ファイアウォールなどの設定を適切に行ってください。</p>
+<pre><span class="comment"># サーバーの起動</span>
+./festivoiced</pre>
+		</div>
+
+		<h3>カスタマイズ</h3>
+		<div class="doc">
+			<p>Webインタフェースのスタイルやロゴは、festivoiceサーバーパッケージの<strong>webapp/</strong>ディレクトリ以にあるファイルを書き換えることでカスタマイズできます。</p>
+			<ul>
+				<li>index.xsl：トップページ</li>
+				<li>style.css：スタイル</li>
+				<li>img/log.png：ロゴ</li>
+			</ul>
+		</div>
+
+	</div>
+	<div id="footer">
+		<p><span id="copyright">Copyright (C) 2009 festivoice developer team. All Rights Reserved.</span><a id="staff" href="staff.html">Staff</a></p>
+	</div>
+</body>
+</html>

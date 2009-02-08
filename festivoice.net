@@ -1,0 +1,43 @@
+#!/bin/sh
+
+host="stream.festivoice.net"
+port=11100
+jar="http://festivoice.net/pkg/festivoice.jar"
+tmp="/tmp/festivoice.jar"
+
+while [ -n "$1" ]; do
+	case "$1" in
+	-h)
+		host="`shift`"
+		;;
+	-p)
+		port="`shift`"
+		;;
+	*)
+		break
+		;;
+	esac
+	shift
+done
+
+if [ -z "$1" -o -n "$3" ];then
+	echo "usage: `basename "$0"` [options] <channel> [user=`id -un`]"
+	echo "  -h HOST=stream.festivoice.net : server host"
+	echo "  -p PORT=11100                 : server port"
+	exit 1
+fi
+
+channel="$1"
+user="$2"
+
+wget -O "$tmp" "$jar" >/dev/null 2>/dev/null || curl -o "$tmp" "$jar" >/dev/null 2>/dev/null || fetch -o "$tmp" "$jar" >/dev/null 2>/dev/null
+
+class_path="$tmp"
+if [ -n "$CLASSPATH" ]; then
+	class_path="$class_path:$CLASSPATH"
+fi
+
+java -classpath "$class_path" festivoice.net -C "$host" "$port" "$channel" "$user"
+
+rm -f "$tmp"
+

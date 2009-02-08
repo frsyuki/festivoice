@@ -1,0 +1,253 @@
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+img {
+	border: none;
+}
+
+body {
+	font-family: sans-serif;
+}
+
+a {
+	color: #007711;
+	text-decoration: underline;
+}
+
+a:hover {
+	color: #009911;
+	text-decoration: none;
+}
+
+strong {
+	margin: 0 0.3em;
+}
+
+#header {
+	background: #007000 url("../img/background.png") no-repeat right top;
+	position: relative;
+}
+
+#header h1 { }
+
+#header h1 a {
+	display: block;
+	width: 400px;
+	height: 250px;
+	background: url("../img/logo.png") no-repeat;
+	background-position: -10px 10px;
+	text-decoration: none;
+	border: none;
+}
+
+#title {
+	display: none;
+}
+
+#header #about {
+	margin: -95px 0 0 0;
+	background: transparent url("../img/grayback.png");
+	padding: 1.5em 7% 1.5em 7%;
+	color: white;
+	border-top: 2px solid #000000;
+	font-size: 90%;
+}
+
+#header #about p {
+	line-height: 160%;
+	color: #dddddd;
+	margin: 0.5em 0 0 0;
+}
+
+#header #about ul {
+	line-height: 150%;
+	list-style-type: none;
+	margin: 0.3em 0;
+}
+
+#header #about ul li:before {
+	display: inline;
+	content: "> ";
+	font-size: 90%;
+	margin-right: 0.2em;
+}
+
+#header #about h2 {
+	font-size: 150%;
+	margin: 0em 0 0.6em 0;
+	padding: 0;
+}
+
+#header #about h2.cont {
+	margin: 2em 0 0 0;
+}
+
+#header #about h3 {
+	margin: 1.5em 0 0 0;
+	font-size: 110%;
+	font-weight: normal;
+}
+
+#header #about h3 a {
+	color: white;
+}
+
+.staff {
+	padding-left: 1em;
+}
+
+#header #about strong {
+	color: white;
+	font-size: 110%;
+}
+
+#header #about a {
+	color: #dddddd;
+	text-decoration: underline;
+	margin: 0 0.2em 0 0.2em;
+}
+
+#header #about a:hover {
+	color: white;
+	text-decoration: none;
+}
+
+#header #about address {
+	margin: 2em 0 0 0;
+}
+
+#header #about .address_at:after {
+	content: '@';
+}
+#header #about .address_hd {
+	display: none;
+}
+
+#header #links {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+	list-style: none;
+}
+
+#header #links li {
+	display: inline;
+	margin: 0 0.2em;
+	font-size: 90%;
+}
+
+#header #links li a {
+	color: white;
+}
+
+#content {
+	width: 80%;
+	max-width: 70em;
+	min-width: 44em;
+	margin: 0 auto;
+	padding: 0.5em;
+	font-size: 95%;
+}
+
+#content h2 {
+	text-align: center;
+	font-size: 120%;
+	font-weight: normal;
+	width: 20em;
+	margin: 0.5em auto 0.2em auto;
+	padding: 0.3em;
+	border-bottom: 2px solid #007000;
+	border-top: 2px solid #007000;
+}
+
+#content > h3 {
+	font-size: 125%;
+	margin: 0.8em 0 0.4em 0;
+}
+
+#content .doc {
+	margin: 0 0 1.5em 0;
+	padding: 0.4em 0.8em;
+	border: 4px solid #007000;
+	line-height: 150%;
+}
+
+#content .doc p {
+	margin: 0.4em 0;
+}
+
+#content .doc pre {
+	font-size: 0.94em;
+	margin: 0.8em 0 1.2em 0;
+	padding: 0.5em 0.7em;
+	background-color: #333333;
+	color: white;
+	line-height: 150%;
+	border: 2px solid #222222;
+}
+
+#content .doc pre .comment {
+	color: #55ff55;
+}
+
+#content #startf {
+	clear: both;
+	text-align: center;
+}
+
+#content #startf input#starti {
+	border: 1px solid gray;
+	margin: 0.5em 0.7em;
+	width: 22em;
+	padding: 0.2em;
+}
+
+#content #startf input#startb {
+	padding: 0.2em;
+}
+
+
+div.channel {
+	font-size: 110%;
+	padding: 0.2em 0.2em 0.5em 0.5em;
+	margin: 0.5em;
+	border: 3px solid #007000;
+	width: 18em;
+	float: left;
+}
+
+div.channel h3 {
+	margin: 0.4em 0.2em 0 0.4em;
+}
+
+ul {
+	padding: 0.2em 0.2em 0.2em 2em;
+}
+
+#footer {
+	border-top: 2px solid #007000;
+	clear: both;
+	font-size: 90%;
+}
+
+#footer p {
+	color: #999999;
+	padding: 0.5em;
+	text-align: center;
+}
+
+#footer p * {
+	margin: 0 0.3em;
+}
+
+.clearfix:after {
+	content: "";
+	display: block;
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+
