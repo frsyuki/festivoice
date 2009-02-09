@@ -21,6 +21,7 @@ import java.lang.*;
 import java.util.*;
 import java.net.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
 
@@ -33,8 +34,10 @@ public class GUILauncher extends JFrame
 	private JLabel statusLabel;
 	private Client client;
 	private JCheckBox listenOnlyCheckBox;
+	private JButton talkButton;
 
 	private boolean connectSubmitted = false;
+	private boolean memberExists = false;
 
 	private String host;
 	private int port;
@@ -121,33 +124,50 @@ public class GUILauncher extends JFrame
 		c0.add(c2, BorderLayout.CENTER);
 
 
-		// statusLabel    [submitButton]
+		// statusLabel  [x]listen only   [submitButton]
 		JPanel c3 = new JPanel();
 		c3.setLayout(new BorderLayout());
 		c0.add(c3, BorderLayout.PAGE_END);
 
+
 		// statusLabel
 		statusLabel = new JLabel();
 		statusLabel.setText("");
-		c3.add(statusLabel, BorderLayout.LINE_START);
+//		c3.add(statusLabel, BorderLayout.LINE_START);
+
+
+		// talk button
+		talkButton = new JButton();
+		talkButton.setText("接続待ち");
+		talkButton.setEnabled(false);
+
+		talkButton.addChangeListener( new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				talkButtonChanged();
+			}
+		});
+		c3.add(talkButton, BorderLayout.LINE_START);
+
+
 
 		// checkbox
 		listenOnlyCheckBox = new JCheckBox();
-
 		listenOnlyCheckBox.setText("listen only");
+		listenOnlyCheckBox.setEnabled(false);
 
-		c3.add( listenOnlyCheckBox, BorderLayout.CENTER );
+		listenOnlyCheckBox.addActionListener( new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setListenOnlyCheckBox();
+				}
+			});
 
-		listenOnlyCheckBox.addMouseListener( new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				setListenOnlyCheckBox(e);
-			}
-		});
+		c3.add(listenOnlyCheckBox, BorderLayout.CENTER);
+
 
 		// [submitButton]
 		submitButton = new JButton();
 		submitButton.setText("接続");
-		submitButton.addActionListener(new ActionListener() {
+		submitButton.addActionListener( new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
 					submitPerformed();
 				}
@@ -175,9 +195,40 @@ public class GUILauncher extends JFrame
 		pack();
 	}
 
-	private void setListenOnlyCheckBox(MouseEvent e)
+	private void setListenOnlyCheckBox()
 	{
-		client.setListenOnly( listenOnlyCheckBox.isSelected() );
+		if(client == null) { return; }
+
+		if(listenOnlyCheckBox.isSelected()) {
+			client.setListenOnly(true);
+			talkButton.setEnabled(true);
+			talkButton.requestFocusInWindow();
+		} else {
+			client.setListenOnly(true);
+			talkButton.setEnabled(false);
+		}
+	}
+
+	private void talkButtonChanged()
+	{
+		if(client == null) { return; }
+
+		if(!listenOnlyCheckBox.isSelected() ||
+				talkButton.getModel().isPressed()) {
+			client.setListenOnly(false);
+			if(!memberExists) {
+				talkButton.setText("接続待ち");
+			} else {
+				talkButton.setText("会話中");
+			}
+		} else {
+			client.setListenOnly(true);
+			if(!memberExists) {
+				talkButton.setText("接続待ち");
+			} else {
+				talkButton.setText("話す");
+			}
+		}
 	}
 
 	private void doSubmit()
@@ -207,17 +258,18 @@ public class GUILauncher extends JFrame
 
 		model.addElement(userField.getText());
 
-		boolean member = false;
+		memberExists = false;
 		for (IClientUserInfo userInfo : client.getClientUserInfoIterator()) {
 			model.addElement(userInfo.getUserName());
-			member = true;
+			memberExists = true;
 		}
 
-		if(member) {
+		if(memberExists) {
 			statusLabel.setText("会話中");
 		} else {
 			statusLabel.setText("接続待ち");
 		}
+		talkButtonChanged();
 	}
 
 	private void tryStart()
@@ -246,6 +298,7 @@ public class GUILauncher extends JFrame
 		userField.setEnabled(false);
 		channelField.setEnabled(false);
 		userList.setVisible(true);
+		listenOnlyCheckBox.setEnabled(true);
 
 		client.setInitCallback(new Runnable() {
 				public void run() {

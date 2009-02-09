@@ -14,7 +14,7 @@
 			<h1><a href="/"><span id="title">festivoice</span></a></h1>
 			<div id="about">
 				<h2>音声チャットをはじめよう!</h2>
-				<p><strong>festivoice</strong>（フェスティボイス）を使うと手軽に多人数の音声チャットを始められます。</p>
+				<p><strong>festivoice</strong>（フェスティボイス）を使うと気軽に多人数の音声チャットを始められます。</p>
 				<ul>
 					<li>ミーティングに</li>
 					<li>ペアプログラミングに</li>
