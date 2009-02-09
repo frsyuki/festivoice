@@ -32,6 +32,7 @@ public class GUILauncher extends JFrame
 	private JTextField userField;
 	private JLabel statusLabel;
 	private Client client;
+	private JCheckBox listenOnlyCheckBox;
 
 	private boolean connectSubmitted = false;
 
@@ -130,6 +131,19 @@ public class GUILauncher extends JFrame
 		statusLabel.setText("");
 		c3.add(statusLabel, BorderLayout.LINE_START);
 
+		// checkbox
+		listenOnlyCheckBox = new JCheckBox();
+
+		listenOnlyCheckBox.setText("listen only");
+
+		c3.add( listenOnlyCheckBox, BorderLayout.CENTER );
+
+		listenOnlyCheckBox.addMouseListener( new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				setListenOnlyCheckBox(e);
+			}
+		});
+
 		// [submitButton]
 		submitButton = new JButton();
 		submitButton.setText("接続");
@@ -159,6 +173,11 @@ public class GUILauncher extends JFrame
 		setTitle("festivoice.net");
 
 		pack();
+	}
+
+	private void setListenOnlyCheckBox(MouseEvent e)
+	{
+		client.setListenOnly( listenOnlyCheckBox.isSelected() );
 	}
 
 	private void doSubmit()

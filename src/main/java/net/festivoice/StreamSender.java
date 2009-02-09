@@ -78,6 +78,13 @@ public class StreamSender extends Thread
 		return baseByteArraySize * codecInfo.countFrames;
 	}
 
+	public void setListenOnly(boolean flag)
+	{
+		for(ThreadedPacketSender s : packetSender) {
+			s.setListenOnly(flag);
+		}
+	}
+
 	public void end()
 	{
 		endFlag = true;

@@ -68,6 +68,11 @@ public class Client extends Thread
 		receiver = new StreamReceiver(socket, outputLineInfo, outputCodecInfo, clientUserInfoManager);
 	}
 
+	public void setListenOnly(boolean flag)
+	{
+		sender.setListenOnly(flag);
+	}
+
 	public void run()
 	{
 		// Start input line
