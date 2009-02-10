@@ -36,6 +36,8 @@ public class StreamSender extends Thread
 	private int baseByteArraySize;
 	private CodecInfo codecInfo;
 
+	private boolean isListenOnly = false;
+
 	private boolean endFlag = false;
 
 	public static class CodecInfo
@@ -58,7 +60,7 @@ public class StreamSender extends Thread
 
 	public StreamSender(ThreadedPacketSender.SessionInfo sessionInfo, TargetDataLine targetDataLine, CodecInfo codecInfo) throws LineUnavailableException
 	{
-		this.blockingQueue = new LinkedBlockingQueue<byte[]>(16*8);
+		this.blockingQueue = new LinkedBlockingQueue<byte[]>(16);
 
 		packetSender = new ThreadedPacketSender[1];
 		for(int i=0; i < packetSender.length; ++i) {
@@ -80,9 +82,15 @@ public class StreamSender extends Thread
 
 	public void setListenOnly(boolean flag)
 	{
-		for(ThreadedPacketSender s : packetSender) {
-			s.setListenOnly(flag);
+		if(flag != isListenOnly) {
+			if(flag) {
+				targetDataLine.stop();
+			} else {
+				targetDataLine.flush();
+				targetDataLine.start();
+			}
 		}
+		isListenOnly = flag;
 	}
 
 	public void end()
@@ -97,15 +105,23 @@ public class StreamSender extends Thread
 		}
 		try {
 			while (!endFlag) {
-				// Input voice data
-				byte[] soundBuffer = new byte[baseByteArraySize * codecInfo.countFrames];
-				targetDataLine.read(soundBuffer, 0, baseByteArraySize);
-				for (int i = 1; i < codecInfo.countFrames; i++) {
-					targetDataLine.read(soundBuffer, baseByteArraySize * i, baseByteArraySize);
-				}
 
-				// put
-				blockingQueue.put(soundBuffer);
+				if(isListenOnly) {
+					Thread.sleep(500);
+					byte[] zero = new byte[0];
+					blockingQueue.put(zero);
+
+				} else {
+					// Input voice data
+					byte[] soundBuffer = new byte[baseByteArraySize * codecInfo.countFrames];
+					targetDataLine.read(soundBuffer, 0, baseByteArraySize);
+					for (int i = 1; i < codecInfo.countFrames; i++) {
+						targetDataLine.read(soundBuffer, baseByteArraySize * i, baseByteArraySize);
+					}
+	
+					// put
+					blockingQueue.put(soundBuffer);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

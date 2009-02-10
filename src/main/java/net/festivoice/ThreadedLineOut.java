@@ -58,7 +58,7 @@ public class ThreadedLineOut extends Thread
 		decoder = new SpeexDecoder();
 		decoder.init(codecInfo.mode, (int)codecInfo.format.getSampleRate(), codecInfo.format.getChannels(), false);
 
-		queue = new LinkedBlockingQueue<byte[]>(16*8);
+		queue = new LinkedBlockingQueue<byte[]>(16);
 
 		decodedData = new byte[codecInfo.decodedSize];
 
@@ -76,12 +76,18 @@ public class ThreadedLineOut extends Thread
 		try {
 			while(!endFlag) {
 				byte[] buffer = queue.take();
-				decoder.processData(buffer, 0, buffer.length);
 
+				if(buffer.length == 0) {
+					// listen only packet
+					continue;
+				}
+	
+				decoder.processData(buffer, 0, buffer.length);
+	
 				for (int i = 1; i < codecInfo.countFrames; i++) {
 					decoder.processData(false);
 				}
-
+	
 				int decsize = decoder.getProcessedData(decodedData, 0);
 				line.write(decodedData, 0, decsize);
 			}

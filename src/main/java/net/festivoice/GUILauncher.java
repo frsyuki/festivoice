@@ -31,12 +31,10 @@ public class GUILauncher extends JFrame
 	private JList userList;
 	private JTextField channelField;
 	private JTextField userField;
-	private JLabel statusLabel;
 	private Client client;
 	private JCheckBox listenOnlyCheckBox;
-	private JButton talkButton;
+	private JButton statusButton;
 
-	private boolean connectSubmitted = false;
 	private boolean memberExists = false;
 
 	private String host;
@@ -58,11 +56,11 @@ public class GUILauncher extends JFrame
 		userField.setText(user);
 		channelField.setText(channel);
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				tryStart();
-			}
-		});
+		//EventQueue.invokeLater(new Runnable() {
+		//	public void run() {
+		//		tryStart();
+		//	}
+		//});
 	}
 
 	private void initComponents()
@@ -116,7 +114,7 @@ public class GUILauncher extends JFrame
 
 		// userList
 		userList = new JList(new DefaultListModel());
-		userList.setVisible(false);
+		userList.setEnabled(false);
 
 		JScrollPane c2 = new JScrollPane();
 		c2.setViewportView(userList);
@@ -124,29 +122,23 @@ public class GUILauncher extends JFrame
 		c0.add(c2, BorderLayout.CENTER);
 
 
-		// statusLabel  [x]listen only   [submitButton]
+		// statusButton  [x]listen only   [submitButton]
 		JPanel c3 = new JPanel();
 		c3.setLayout(new BorderLayout());
 		c0.add(c3, BorderLayout.PAGE_END);
 
 
-		// statusLabel
-		statusLabel = new JLabel();
-		statusLabel.setText("");
-//		c3.add(statusLabel, BorderLayout.LINE_START);
-
-
 		// talk button
-		talkButton = new JButton();
-		talkButton.setText("接続待ち");
-		talkButton.setEnabled(false);
+		statusButton = new JButton();
+		statusButton.setText("未接続");
+		statusButton.setEnabled(false);
 
-		talkButton.addChangeListener( new ChangeListener() {
+		statusButton.addChangeListener( new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				talkButtonChanged();
 			}
 		});
-		c3.add(talkButton, BorderLayout.LINE_START);
+		c3.add(statusButton, BorderLayout.LINE_START);
 
 
 
@@ -157,7 +149,7 @@ public class GUILauncher extends JFrame
 
 		listenOnlyCheckBox.addActionListener( new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					setListenOnlyCheckBox();
+					changeListenOnlyCheckBox();
 				}
 			});
 
@@ -195,38 +187,36 @@ public class GUILauncher extends JFrame
 		pack();
 	}
 
-	private void setListenOnlyCheckBox()
+	private void changeListenOnlyCheckBox()
 	{
 		if(client == null) { return; }
 
 		if(listenOnlyCheckBox.isSelected()) {
-			client.setListenOnly(true);
-			talkButton.setEnabled(true);
-			talkButton.requestFocusInWindow();
+			statusButton.setEnabled(true);
+			statusButton.requestFocusInWindow();
 		} else {
-			client.setListenOnly(true);
-			talkButton.setEnabled(false);
+			statusButton.setEnabled(false);
 		}
+		talkButtonChanged();
 	}
 
 	private void talkButtonChanged()
 	{
 		if(client == null) { return; }
 
-		if(!listenOnlyCheckBox.isSelected() ||
-				talkButton.getModel().isPressed()) {
+		if(!isListenOnly() || statusButton.getModel().isPressed()) {
 			client.setListenOnly(false);
 			if(!memberExists) {
-				talkButton.setText("接続待ち");
+				statusButton.setText("接続待ち");
 			} else {
-				talkButton.setText("会話中");
+				statusButton.setText("会話中");
 			}
 		} else {
 			client.setListenOnly(true);
 			if(!memberExists) {
-				talkButton.setText("接続待ち");
+				statusButton.setText("接続待ち");
 			} else {
-				talkButton.setText("話す");
+				statusButton.setText("話す");
 			}
 		}
 	}
@@ -238,8 +228,9 @@ public class GUILauncher extends JFrame
 
 	private void submitPerformed()
 	{
-		if(!connectSubmitted) {
+		if(!isStarted()) {
 			tryStart();
+			listenOnlyCheckBox.requestFocusInWindow();
 		} else {
 			System.exit(0);
 		}
@@ -247,7 +238,13 @@ public class GUILauncher extends JFrame
 
 	private void clientInitialized()
 	{
-		statusLabel.setText("接続待ち");
+		if(client.isMicAvailable()) {
+			listenOnlyCheckBox.setEnabled(true);
+		} else {
+			listenOnlyCheckBox.setSelected(true);
+			listenOnlyCheckBox.setText("マイクが使えません");
+		}
+		talkButtonChanged();
 	}
 
 	private void updateUserList()
@@ -264,11 +261,6 @@ public class GUILauncher extends JFrame
 			memberExists = true;
 		}
 
-		if(memberExists) {
-			statusLabel.setText("会話中");
-		} else {
-			statusLabel.setText("接続待ち");
-		}
 		talkButtonChanged();
 	}
 
@@ -277,12 +269,13 @@ public class GUILauncher extends JFrame
 		final String user = userField.getText();
 		final String channel = channelField.getText();
 
-		if(client != null || user.equals("") || channel.equals("")) {
+		if(isStarted() || user.equals("") || channel.equals("")) {
 			return;
 		}
 
+		Client tmpClient;
 		try {
-			client = new Client(channel, user, new InetSocketAddress(host, port),
+			tmpClient = new Client(channel, user, new InetSocketAddress(host, port),
 					mode, quality, vbr);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -293,14 +286,9 @@ public class GUILauncher extends JFrame
 			return;
 		}
 
-		statusLabel.setText("初期化中");
+		statusButton.setText("初期化中");
 
-		userField.setEnabled(false);
-		channelField.setEnabled(false);
-		userList.setVisible(true);
-		listenOnlyCheckBox.setEnabled(true);
-
-		client.setInitCallback(new Runnable() {
+		tmpClient.setInitCallback(new Runnable() {
 				public void run() {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
@@ -310,7 +298,7 @@ public class GUILauncher extends JFrame
 				}
 			});
 
-		client.setUserUpdateCallback(new Runnable() {
+		tmpClient.setUserUpdateCallback(new Runnable() {
 				public void run() {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
@@ -319,12 +307,26 @@ public class GUILauncher extends JFrame
 					});
 				}
 			});
-		updateUserList();
 
+		userField.setEnabled(false);
+		channelField.setEnabled(false);
+		userList.setEnabled(true);
 		submitButton.setText("終了");
-		connectSubmitted = true;
 
-		client.start();
+		tmpClient.start();
+
+		client = tmpClient;
+		updateUserList();
+	}
+
+	private boolean isListenOnly()
+	{
+		return listenOnlyCheckBox.isSelected();
+	}
+
+	private boolean isStarted()
+	{
+		return client != null;
 	}
 
 	public static void main(String[] args)

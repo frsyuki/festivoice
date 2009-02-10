@@ -37,6 +37,7 @@ public class Client extends Thread
 	private static final int COUNT_FRAMES = 4;
 
 	private Runnable initCallback;
+	private boolean isMicAvailable = true;
 
 	public Client(String channelName, String userName, SocketAddress serverAddress,
 			int mode, int quality, boolean vbr) throws Exception
@@ -48,9 +49,13 @@ public class Client extends Thread
 		DatagramSocket socket = new DatagramSocket();
 
 		// Initialize StreamSender
-		DataLine.Info inputDataLineInfo = new DataLine.Info(TargetDataLine.class, format);
-		inputDataLine = (TargetDataLine)AudioSystem.getLine(inputDataLineInfo);
-		inputDataLine.open();
+		try {
+			DataLine.Info inputDataLineInfo = new DataLine.Info(TargetDataLine.class, format);
+			inputDataLine = (TargetDataLine)AudioSystem.getLine(inputDataLineInfo);
+			inputDataLine.open();
+		} catch (Exception e) {
+			isMicAvailable = false;
+		}
 
 		ThreadedPacketSender.SessionInfo sessionInfo =
 			new ThreadedPacketSender.SessionInfo(serverAddress, socket, channelName, userName);
@@ -73,20 +78,35 @@ public class Client extends Thread
 		sender.setListenOnly(flag);
 	}
 
+	public boolean isMicAvailable()
+	{
+		return this.isMicAvailable;
+	}
+
 	public void run()
 	{
-		// Start input line
-		inputDataLine.start();
+		try {
+			if(isMicAvailable) {
+				// Start input line
+				inputDataLine.start();
 
-		//while (!inputDataLine.isRunning()) {
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-				e.printStackTrace();
+				//while (!inputDataLine.isRunning()) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//}
 			}
-		//}
+
+		} catch (Exception e) {
+			isMicAvailable = false;
+		}
 
 		// Start StreamSender
+		if(!isMicAvailable) {
+			sender.setListenOnly(true);
+		}
 		sender.start();
 
 		// Start StreamReceiver
@@ -106,7 +126,11 @@ public class Client extends Thread
 		}
 
 		// Stop data source
-		inputDataLine.stop();
+		try {
+			inputDataLine.stop();
+		} catch (Exception e) {
+			// ignore error
+		}
 	}
 
 	public void end()

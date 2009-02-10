@@ -80,6 +80,10 @@ public class WebStatusView extends HttpServlet
 				continue;
 			}
 
+			if(channelInfo.getChannelName().startsWith("_")) {
+				continue;
+			}
+
 			Element channel = doc.createElement("channel");
 
 			Element cname = doc.createElement("name");

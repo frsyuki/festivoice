@@ -49,12 +49,11 @@ public class StreamReceiver extends Thread
 	{
 		byte[] buf = new byte[1024 * 35];
 		DatagramPacket received = new DatagramPacket(buf, buf.length);
-		UDPData data = new UDPData();
 		while (!endFlag) {
 			try {
 				received.setLength(buf.length);
 				socket.receive(received);
-				data.fromByteArray(received.getData());
+				UDPData data = UDPData.deserialize(received.getData());
 				clientUserInfoManager.user(data.getUserName(), data.getUserIndex());
 
 				LazyThreadedLineOut line = threadedLines[data.getUserIndex()];

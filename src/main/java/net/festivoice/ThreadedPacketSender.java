@@ -33,8 +33,6 @@ public class ThreadedPacketSender extends Thread
 	private int baseByteArraySize;
 	private boolean endFlag = false;
 
-	private boolean isListenOnly = false;
-
 	public static class SessionInfo
 	{
 		private SocketAddress serverAddress;
@@ -64,11 +62,6 @@ public class ThreadedPacketSender extends Thread
 		baseByteArraySize = encoder.getFrameSize() * encoder.getChannels() * 2;
 	}
 
-	public void setListenOnly(boolean flag)
-	{
-		isListenOnly = flag;
-	}
-
 	public int getBaseArraySize()
 	{
 		return baseByteArraySize;
@@ -85,21 +78,18 @@ public class ThreadedPacketSender extends Thread
 			while(!endFlag) {
 				byte[] soundBuffer = queue.take();
 
-				if(isListenOnly) {
-					Arrays.fill(soundBuffer, (byte)0);
+				if(soundBuffer.length != 0) {
+					// Encode voice data
+					encoder.processData(soundBuffer, 0, baseByteArraySize);
+					for (int i = 1; i < codecInfo.countFrames; i++) {
+						encoder.processData(soundBuffer, baseByteArraySize * i, baseByteArraySize);
+					}
+					byte[] encodedData = new byte[encoder.getProcessedDataByteSize()];
+					encoder.getProcessedData(encodedData, 0);
+					soundBuffer = encodedData;
 				}
 
-				// Encode voice data
-				encoder.processData(soundBuffer, 0, baseByteArraySize);
-				for (int i = 1; i < codecInfo.countFrames; i++) {
-					encoder.processData(soundBuffer, baseByteArraySize * i, baseByteArraySize);
-				}
-				byte[] encodedData = new byte[encoder.getProcessedDataByteSize()];
-				encoder.getProcessedData(encodedData, 0);
-
-				// Pack and Send
-				UDPData data = new UDPData(sessionInfo.channelName, sessionInfo.userName, encodedData, 0);	// FIXME: set sequence number
-				byte[] buffer = data.toByteArray();
+				byte[] buffer = UDPData.serialize(sessionInfo.userName, sessionInfo.channelName, soundBuffer, 0, (short)0);
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, sessionInfo.serverAddress);
 				sessionInfo.socket.send(packet);
 			}

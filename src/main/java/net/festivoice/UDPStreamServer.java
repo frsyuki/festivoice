@@ -22,21 +22,27 @@ import java.util.*;
 import java.net.*;
 import java.util.concurrent.*;
 
-class UDPDataWithAddress extends UDPData
+class UDPDataWithAddress
 {
 	private SocketAddress address;
+	private UDPData data;
 
 	public UDPDataWithAddress(DatagramPacket received) throws Exception
 	{
-		super();
 		address = received.getSocketAddress();
-		fromByteArray(received.getData());
+		data = UDPData.deserialize(received.getData());
 	}
 
 	public SocketAddress getSocketAddress()
 	{
 		return address;
 	}
+
+	public UDPData getData()
+	{
+		return data;
+	}
+
 }
 
 class Worker extends Thread
@@ -57,9 +63,10 @@ class Worker extends Thread
 	{
 		while(!endFlag) {
 			try {
-				UDPDataWithAddress data = queue.take();
-				SocketAddress fromAddress = data.getSocketAddress();
+				UDPDataWithAddress dataWithAddress = queue.take();
+				SocketAddress fromAddress = dataWithAddress.getSocketAddress();
 
+				UDPData data = dataWithAddress.getData();
 				IChannelInfo channel = channelServer.channelData(data.getChannelName(),
 						data.getUserName(), fromAddress);
 
@@ -74,8 +81,8 @@ class Worker extends Thread
 
 				for(IUserInfo user : channel.getUsers()) {
 					if(!user.getSocketAddress().equals(fromAddress)) {
-						data.setUserIndex(userIndex);
-						byte[] send_data = data.toByteArray();
+						byte[] send_data = UDPData.serialize(data.getUserName(),data.getChannelName(),data.getVoiceData(),
+								data.getSequenceNumber(),userIndex);
 						DatagramPacket send = new DatagramPacket(send_data, send_data.length, user.getSocketAddress());
 						socket.send(send);
 					}

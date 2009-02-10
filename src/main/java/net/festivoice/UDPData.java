@@ -27,15 +27,7 @@ public class UDPData {
 	private String channelName;
 	private byte[] voiceData;
 
-	public UDPData(String channel_name, String user_name, byte[] data, int sequence_number) {
-		sequenceNumber = sequence_number;
-		userIndex = 0;
-		channelName = channel_name;
-		userName = user_name;
-		voiceData = data;
-	}
-
-	public UDPData() {
+	private UDPData() {
 		sequenceNumber = 0;
 		userIndex = 0;
 		userName = "";
@@ -51,9 +43,6 @@ public class UDPData {
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
-	public void setUserIndex(short index) {
-		userIndex = index;
-	}
 	public short getUserIndex() {
 		return userIndex;
 	}
@@ -61,7 +50,7 @@ public class UDPData {
 		return voiceData;
 	}
 
-	byte[] toByteArray() throws Exception {
+	public static byte[] serialize(String userName,String channelName,byte[] voiceData,int sequenceNumber,short userIndex) throws Exception {
 		byte[] userNameBytes = userName.getBytes("UTF-8");
 		byte[] channelNameBytes = channelName.getBytes("UTF-8");
 
@@ -84,29 +73,34 @@ public class UDPData {
 
 		byte[] result = new byte[buf.position()];
 		System.arraycopy(buf.array(), 0, result, 0, result.length);
+
 		return result;
 	}
 
-	public void fromByteArray(byte[] data) throws Exception {
-		ByteBuffer buf = ByteBuffer.wrap(data);
+	public static UDPData deserialize(byte[] rawData) throws Exception {
+		UDPData data = new UDPData();
+
+		ByteBuffer buf = ByteBuffer.wrap(rawData);
 		buf.order(ByteOrder.BIG_ENDIAN);
 
-		sequenceNumber = buf.getInt();
-		userIndex = buf.getShort();
+		data.sequenceNumber = buf.getInt();
+		data.userIndex = buf.getShort();
 
 		short chLen = buf.getShort();
 		byte[] chbuf = new byte[chLen];
 		buf.get(chbuf, 0, chLen);
-		channelName = new String(chbuf, "UTF-8");
+		data.channelName = new String(chbuf, "UTF-8");
 
 		short unameLen = buf.getShort();
 		byte[] strbuf = new byte[unameLen];
 		buf.get(strbuf, 0, unameLen);
-		userName = new String(strbuf, "UTF-8");
+		data.userName = new String(strbuf, "UTF-8");
 
 		short voiceLen = buf.getShort();
-		voiceData = new byte[voiceLen];
-		buf.get(voiceData, 0, voiceLen);
+		data.voiceData = new byte[voiceLen];
+		buf.get(data.voiceData, 0, voiceLen);
+
+		return data;
 	}
 }
 
