@@ -143,6 +143,12 @@ strong {
 	color: white;
 }
 
+#header .new {
+	color: #ffff00;
+	font-weight: bold;
+	margin-right: 0.3em;
+}
+
 #content {
 	width: 80%;
 	max-width: 70em;
@@ -157,11 +163,55 @@ strong {
 	font-size: 120%;
 	font-weight: normal;
 	width: 20em;
-	margin: 0.5em auto 0.2em auto;
-	padding: 0.3em;
 	border-bottom: 2px solid #007000;
 	border-top: 2px solid #007000;
+	margin: 0.5em auto 0.2em auto;
+	padding: 0.2em;
 }
+
+#content h2#channels_h {
+}
+
+#content ul#events {
+	border: 3px solid #007000;
+	padding: 0;
+	margin: 2em auto 1em auto;
+}
+
+#content ul#events {
+	line-height: 100%
+}
+
+#content ul#events li {
+	padding: 0.8% 3%;
+	list-style-type: none;
+}
+#content ul#events li:nth-child(even) {
+	background-color: #e6ffe6;
+}
+
+#content ul#events li .hidden {
+	color: #999999;
+}
+#content ul#events li .new {
+	color: #ff0000;
+	font-weight: bold;
+	margin-right: 0.4em;
+	font-size: 80%;
+}
+#content ul#events li .time {
+	margin-right: 1em;
+}
+#content ul#events li .channel {
+	font-weight: bold;
+	margin: 0 0.1em;
+}
+#content ul#events li .user {
+	font-style: italic;
+	margin: 0 0.2em 0 0.1em;
+}
+
+
 
 #content > h3 {
 	font-size: 125%;

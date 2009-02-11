@@ -29,16 +29,14 @@ public class StepTimeoutChannelManager extends Thread implements IChannelManager
 
 	private int interval;
 	private int limit;
-	private PrintStream logStream;
 
 	/**
 	 * @param interval_millis タイムアウトカウントをインクリメントする間隔(単位はミリ秒)
 	 * @param limit_step タイムアウトカウントの上限
 	 *
 	 */
-	StepTimeoutChannelManager(int interval_millis, int limit_step, PrintStream logStream)
+	StepTimeoutChannelManager(int interval_millis, int limit_step)
 	{
-		this.logStream = logStream;
 		channels = new LinkedHashMap<String, ChannelInfo>();
 		updateChannelsCache();
 		interval = interval_millis;
@@ -51,7 +49,7 @@ public class StepTimeoutChannelManager extends Thread implements IChannelManager
 	}
 
 	public IChannelInfo channelData(String channelName,
-			String userName, SocketAddress userAddress)
+			String userName, InetSocketAddress userAddress)
 	{
 //System.out.println("channelName channel:"+channelName+" user:"+userName+" addr:"+userAddress);
 		ChannelInfo channel = channelsCache.get(channelName);
@@ -62,13 +60,13 @@ public class StepTimeoutChannelManager extends Thread implements IChannelManager
 					channel = new ChannelInfo(channelName);
 					channels.put(channelName, channel);
 					updateChannelsCache();
-					logStream.println("create: '"+channelName+"'");
+					ServerLogger.getInstance().channelCreated(channelName);
 				}
 			}
 		}
 		boolean updated = channel.userData(userName, userAddress);
 		if(updated) {
-			logStream.println("join: "+userAddress+" '"+channelName+"' <- '"+userName+"'");
+			ServerLogger.getInstance().channelJoined(channelName, userName, userAddress);
 		}
 		return channel;
 	}
@@ -109,11 +107,11 @@ public class StepTimeoutChannelManager extends Thread implements IChannelManager
 					String channelName = channel.getChannelName();
 					while(removed.hasNext()) {
 						UserInfo user = removed.next();
-						logStream.println("leave: "+user.getSocketAddress()+" '"+channelName+"' -> '"+user.getUserName()+"'");
+						ServerLogger.getInstance().channelLeaved(channelName, user.getUserName(), user.getInetSocketAddress());
 					}
 					if(channel.isEmpty()) {
 						it.remove();
-						logStream.println("remove: '"+channelName+"'");
+						ServerLogger.getInstance().channelRemoved(channelName);
 					}
 				}
 			}

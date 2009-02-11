@@ -82,7 +82,7 @@ public class StreamSender extends Thread
 
 	public void setListenOnly(boolean flag)
 	{
-		if(flag != isListenOnly) {
+		if(flag != isListenOnly && targetDataLine != null) {
 			if(flag) {
 				targetDataLine.stop();
 			} else {

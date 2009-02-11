@@ -7,12 +7,24 @@
 	<servlet>
 		<servlet-name>WebServerLoader</servlet-name>
 		<servlet-class>net.festivoice.WebServerLoader</servlet-class>
+		<init-param>
+			<param-name>database</param-name>
+			<param-value>../database.derby</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet>
 		<servlet-name>WebStatusView</servlet-name>
 		<servlet-class>net.festivoice.WebStatusView</servlet-class>
+		<init-param>
+			<param-name>eventLimit</param-name>
+			<param-value>20</param-value>
+		</init-param>
+		<init-param>
+			<param-name>newThreshold</param-name>
+			<param-value>8640</param-value>
+		</init-param>
 		<init-param>
 			<param-name>contentType</param-name>
 			<param-value>text/html; charset=UTF-8</param-value>

@@ -35,12 +35,12 @@ public class ThreadedPacketSender extends Thread
 
 	public static class SessionInfo
 	{
-		private SocketAddress serverAddress;
+		private InetSocketAddress serverAddress;
 		private DatagramSocket socket;
 		private String channelName;
 		private String userName;
 
-		public SessionInfo(SocketAddress serverAddress, DatagramSocket socket, String channelName, String userName)
+		public SessionInfo(InetSocketAddress serverAddress, DatagramSocket socket, String channelName, String userName)
 	   	{
 			this.serverAddress = serverAddress;
 			this.socket = socket;

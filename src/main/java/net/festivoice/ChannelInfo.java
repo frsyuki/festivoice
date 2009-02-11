@@ -24,8 +24,8 @@ import java.net.*;
 public class ChannelInfo implements IChannelInfo
 {
 	private String name;
-	private HashMap<SocketAddress, UserInfo> users;
-	private HashMap<SocketAddress, UserInfo> usersCache;
+	private HashMap<InetSocketAddress, UserInfo> users;
+	private HashMap<InetSocketAddress, UserInfo> usersCache;
 
 	/**
 	 * @param n チャンネル名
@@ -33,7 +33,7 @@ public class ChannelInfo implements IChannelInfo
 	ChannelInfo(String n)
 	{
 		name = n;
-		users = new LinkedHashMap<SocketAddress, UserInfo>();
+		users = new LinkedHashMap<InetSocketAddress, UserInfo>();
 		updateUsersCache();
 	}
 
@@ -52,7 +52,7 @@ public class ChannelInfo implements IChannelInfo
 	 * タイムアウトカウントをリセットする(keepalive)。
 	 * @return ユーザーが新規登録されたらtrue
 	 */
-	public boolean userData(String name, SocketAddress addr)
+	public boolean userData(String name, InetSocketAddress addr)
 	{
 	//	UserInfo user = new UserInfo(name, addr);
 		// 新規優先

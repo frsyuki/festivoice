@@ -61,6 +61,9 @@ public class CUILauncher
 		client.setInitCallback( new Runnable() {
 				public void run() {
 					System.out.println("connected");
+					if(!client.isMicAvailable()) {
+						System.out.println("** No microphones are available. Listen only. **");
+					}
 					userUpdateCallback.run();
 				}
 			});

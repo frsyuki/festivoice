@@ -31,13 +31,24 @@ public class WebServerLoader extends HttpServlet
 
 	public void init() throws ServletException
 	{
+		ServletConfig config = getServletConfig();
+
+		String path = config.getInitParameter("database");
+		if(path != null) {
+			try {
+				ServerLogger.getInstance().enableDatabase(path);
+			} catch (IOException e) {
+				throw new ServletException(e);
+			}
+		}
+
 		int stream_port = Integer.parseInt(System.getProperty("streamPort", "6900"));
 		InetSocketAddress stream_bind = new InetSocketAddress(stream_port);
 
 		int timeoutInterval = Integer.parseInt(System.getProperty("timeoutInterval", "1000"));
 		int timeoutLimit = Integer.parseInt(System.getProperty("timeoutLimit", "2"));
 
-		StepTimeoutChannelManager m = new StepTimeoutChannelManager(timeoutInterval, timeoutLimit, System.out);
+		StepTimeoutChannelManager m = new StepTimeoutChannelManager(timeoutInterval, timeoutLimit);
 		m.start();
 
 		try {

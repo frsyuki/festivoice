@@ -24,16 +24,16 @@ import java.util.concurrent.*;
 
 class UDPDataWithAddress
 {
-	private SocketAddress address;
+	private InetSocketAddress address;
 	private UDPData data;
 
 	public UDPDataWithAddress(DatagramPacket received) throws Exception
 	{
-		address = received.getSocketAddress();
+		address = new InetSocketAddress(received.getAddress(), received.getPort());
 		data = UDPData.deserialize(received.getData());
 	}
 
-	public SocketAddress getSocketAddress()
+	public InetSocketAddress getInetSocketAddress()
 	{
 		return address;
 	}
@@ -64,7 +64,7 @@ class Worker extends Thread
 		while(!endFlag) {
 			try {
 				UDPDataWithAddress dataWithAddress = queue.take();
-				SocketAddress fromAddress = dataWithAddress.getSocketAddress();
+				InetSocketAddress fromAddress = dataWithAddress.getInetSocketAddress();
 
 				UDPData data = dataWithAddress.getData();
 				IChannelInfo channel = channelServer.channelData(data.getChannelName(),
@@ -72,7 +72,7 @@ class Worker extends Thread
 
 				short userIndex = 0;
 				for(IUserInfo user : channel.getUsers()) {
-					if(user.getSocketAddress().equals(fromAddress)) {
+					if(user.getInetSocketAddress().equals(fromAddress)) {
 						break;
 					} else {
 						++userIndex;
@@ -80,10 +80,10 @@ class Worker extends Thread
 				}
 
 				for(IUserInfo user : channel.getUsers()) {
-					if(!user.getSocketAddress().equals(fromAddress)) {
+					if(!user.getInetSocketAddress().equals(fromAddress)) {
 						byte[] send_data = UDPData.serialize(data.getUserName(),data.getChannelName(),data.getVoiceData(),
 								data.getSequenceNumber(),userIndex);
-						DatagramPacket send = new DatagramPacket(send_data, send_data.length, user.getSocketAddress());
+						DatagramPacket send = new DatagramPacket(send_data, send_data.length, user.getInetSocketAddress());
 						socket.send(send);
 					}
 				}
@@ -101,17 +101,19 @@ class Worker extends Thread
 }
 
 public class UDPStreamServer extends AbstractStreamServer {
+	private static int DEFAULT_QUEUE_MAX = 2048;
+
 	private DatagramSocket socket;
 	private Worker[] workers;
 	private BlockingQueue<UDPDataWithAddress> queue;
 
-	UDPStreamServer(SocketAddress addr, IChannelManager channelServer) throws SocketException
+	UDPStreamServer(InetSocketAddress addr, IChannelManager channelServer) throws SocketException
 	{
 		socket = new DatagramSocket(addr);
 
-		queue = new LinkedBlockingQueue<UDPDataWithAddress>(1024);  // FIXME
+		queue = new LinkedBlockingQueue<UDPDataWithAddress>(DEFAULT_QUEUE_MAX);
 
-		workers = new Worker[1];  // FIXME
+		workers = new Worker[1];
 		for(int i=0; i < workers.length; ++i) {
 			workers[i] = new Worker(socket, channelServer, queue);
 		}
@@ -135,6 +137,13 @@ public class UDPStreamServer extends AbstractStreamServer {
 			} catch (Exception e) {
 			}
 		}
+	}
+
+	private void changeQueueItems(int itemNumber)
+	{
+		BlockingQueue new_queue = new LinkedBlockingQueue<UDPDataWithAddress>(itemNumber);
+		queue.drainTo(new_queue);
+		queue = new_queue;
 	}
 }
 

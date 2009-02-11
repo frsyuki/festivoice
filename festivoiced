@@ -91,7 +91,7 @@ if [ -n "$custom" ];then
 	exit 0
 fi
 
-classpath="$rootdir/webapp/pkg/festivoice.jar:$rootdir/lib/winstone-lite.jar"
+classpath="$rootdir/webapp/pkg/festivoice.jar:$rootdir/lib/winstone-lite.jar:$rootdir/lib/derby.jar"
 if [ -n "$CLASSPATH" ]; then
 	classpath="$classpath:$CLASSPATH"
 fi

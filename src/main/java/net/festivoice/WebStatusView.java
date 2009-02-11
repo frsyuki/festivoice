@@ -21,6 +21,8 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 import java.net.*;
+import java.text.DateFormat;
+import java.sql.Timestamp;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -35,10 +37,24 @@ public class WebStatusView extends HttpServlet
 	private String contentType;
 	private String styleResourcePath;
 	private IChannelManager channelManager;
+	private int eventLimit;
+	private int newThreshold;
 
 	public void init() throws ServletException
 	{
 		ServletConfig config = getServletConfig();
+
+		String eventLimitString = config.getInitParameter("eventLimit");
+		if(eventLimitString == null) {
+			eventLimitString = "20";
+		}
+		eventLimit = Integer.parseInt(eventLimitString);
+
+		String newThresholdString = config.getInitParameter("newThreshold");
+		if(newThresholdString == null) {
+			newThresholdString = "8640";
+		}
+		newThreshold = Integer.parseInt(newThresholdString);
 
 		contentType = config.getInitParameter("contentType");
 		if(contentType == null) {
@@ -64,6 +80,8 @@ public class WebStatusView extends HttpServlet
 
 	private Document xmlChannelInfo() throws IOException
 	{
+		Timestamp currentTime = ServerLogger.getCurrentTime();
+
 		Document doc;
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -73,47 +91,124 @@ public class WebStatusView extends HttpServlet
 			throw new IOException("failed to create XML document: "+e);
 		}
 
-		Element channels = doc.createElement("channels");
+		Element eStatus = doc.createElement("status");
+
+		// channels
+		Element eChannels = doc.createElement("channels");
 		for(IChannelInfo channelInfo : WebServerLoader.getChannelManager().getChannels()) {
 			if(channelInfo.getChannelName() == null) {
 				System.out.println("null channel name");
 				continue;
 			}
 
-			if(channelInfo.getChannelName().startsWith("_")) {
-				continue;
-			}
+			String channelName = channelInfo.getChannelName();
+			boolean hidden = channelName.startsWith("_");
 
-			Element channel = doc.createElement("channel");
+			Element eChannel = doc.createElement("channel");
 
-			Element cname = doc.createElement("name");
-			cname.appendChild(doc.createTextNode( channelInfo.getChannelName() ));
+			Element eChannelName = doc.createElement("cname");
+			eChannelName.appendChild(doc.createTextNode( channelName ));
 
-			Element users = doc.createElement("users");
+			Element eHidden = doc.createElement("hidden");
+			eHidden.appendChild(doc.createTextNode( hidden ? "1" : "0"  ));
+			eChannel.appendChild(eHidden);
+
+			Element eUsers = doc.createElement("users");
 			for(IUserInfo userInfo : channelInfo.getUsers()) {
 				if(userInfo.getUserName() == null) {
 					System.out.println("null user name");
 					continue;
 				}
 
-				Element user = doc.createElement("user");
+				String userName                 = userInfo.getUserName();
+				InetSocketAddress socketAddress = userInfo.getInetSocketAddress();
+				InetAddress address             = socketAddress.getAddress();
+				int port                        = socketAddress.getPort();
 
-				Element uaddr = doc.createElement("address");
-				uaddr.appendChild(doc.createTextNode( userInfo.getSocketAddress().toString() ));
+				Element eUser = doc.createElement("user");
 
-				Element uname = doc.createElement("name");
-				uname.appendChild(doc.createTextNode( userInfo.getUserName() ));
+				Element eAddress = doc.createElement("address");
+				eAddress.appendChild(doc.createTextNode( address.toString() ));
 
-				user.appendChild(uname);
-				user.appendChild(uaddr);
-				users.appendChild(user);
+				Element ePort = doc.createElement("port");
+				ePort.appendChild(doc.createTextNode( Integer.toString(port) ));
+
+				Element eName = doc.createElement("name");
+				eName.appendChild(doc.createTextNode( userName ));
+
+				eUser.appendChild(eName);
+				eUser.appendChild(eAddress);
+				eUsers.appendChild(eUser);
 			}
 
-			channel.appendChild(cname);
-			channel.appendChild(users);
-			channels.appendChild(channel);
+			eChannel.appendChild(eChannelName);
+			eChannel.appendChild(eUsers);
+			eChannels.appendChild(eChannel);
 		}
-		doc.appendChild(channels);
+		eStatus.appendChild(eChannels);
+
+		// events
+		Element eEvents = doc.createElement("events");
+		for(ServerLogger.Event loggerEvent : ServerLogger.getInstance().getEvent(eventLimit)) {
+
+			Timestamp time      = loggerEvent.getTimestamp();
+			DateFormat format   = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+			String timeString   = format.format(time);
+			int type            = loggerEvent.getType();
+			String channelName  = loggerEvent.getChannelName();
+			String userName     = loggerEvent.getUserName();
+			String address      = loggerEvent.getAddress();
+			int port            = loggerEvent.getPort();
+			boolean hidden      = channelName.startsWith("_");
+			boolean newone      = time.getTime() - currentTime.getTime() < newThreshold;
+
+			Element eEvent = doc.createElement("event");
+
+			Element eTime = doc.createElement("time");
+			eTime.appendChild(doc.createTextNode( timeString ));
+			eEvent.appendChild(eTime);
+
+			Element eType = doc.createElement("type");
+			eType.appendChild(doc.createTextNode( Integer.toString(type) ));
+			eEvent.appendChild(eType);
+
+			Element eHidden = doc.createElement("hidden");
+			eHidden.appendChild(doc.createTextNode( hidden ? "1" : "0" ));
+			eEvent.appendChild(eHidden);
+
+			Element eNew = doc.createElement("new");
+			eNew.appendChild(doc.createTextNode( newone ? "1" : "0" ));
+			eEvent.appendChild(eNew);
+
+			if(channelName != null) {
+				Element eChannel = doc.createElement("channel");
+				eChannel.appendChild(doc.createTextNode( channelName ));
+				eEvent.appendChild(eChannel);
+			}
+
+			if(userName != null) {
+				Element eName = doc.createElement("user");
+				eName.appendChild(doc.createTextNode( loggerEvent.getUserName() ));
+				eEvent.appendChild(eName);
+			}
+
+			if(address != null) {
+				Element eAddress = doc.createElement("address");
+				eAddress.appendChild(doc.createTextNode( loggerEvent.getAddress().toString() ));
+				eEvent.appendChild(eAddress);
+			}
+
+			if(port != 0) {
+				Element ePort = doc.createElement("port");
+				ePort.appendChild(doc.createTextNode( Integer.toString(loggerEvent.getPort()) ));
+				eEvent.appendChild(ePort);
+			}
+
+			eEvents.appendChild(eEvent);
+		}
+		eStatus.appendChild(eEvents);
+
+		doc.appendChild(eStatus);
 
 		return doc;
 	}

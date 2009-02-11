@@ -22,10 +22,10 @@ import java.net.*;
 public class UserInfo implements IUserInfo
 {
 	private String name;
-	private SocketAddress address;
+	private InetSocketAddress address;
 	private int timeout;
 
-	UserInfo(SocketAddress a, String n)
+	UserInfo(InetSocketAddress a, String n)
 	{
 		name = n;
 		address = a;
@@ -37,12 +37,12 @@ public class UserInfo implements IUserInfo
 		return name;
 	}
 
-	public SocketAddress getSocketAddress()
+	public InetSocketAddress getInetSocketAddress()
 	{
 		return address;
 	}
 
-	public void setSocketAddress(SocketAddress a)
+	public void setInetSocketAddress(InetSocketAddress a)
 	{
 		address = a;
 	}

@@ -28,9 +28,9 @@ public interface IUserInfo
 	public String getUserName();
 
 	/**
-	 * ユーザーに結びつけられたSocketAddressを取得する。
-	 * @return SocketAddress
+	 * ユーザーに結びつけられたInetSocketAddressを取得する。
+	 * @return InetSocketAddress
 	 */
-	public SocketAddress getSocketAddress();
+	public InetSocketAddress getInetSocketAddress();
 }
 

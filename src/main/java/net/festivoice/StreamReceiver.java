@@ -26,6 +26,8 @@ class LazyThreadedLineOut extends LazyInstance<ThreadedLineOut> { }
 
 public class StreamReceiver extends Thread
 {
+	private static final int THREAD_LINEOUT = 256;
+		
 	private DatagramSocket socket;
 	private DataLine.Info lineInfo;
 	private ThreadedLineOut.CodecInfo codecInfo;
@@ -39,7 +41,7 @@ public class StreamReceiver extends Thread
 		this.lineInfo = lineInfo;
 		this.codecInfo = codecInfo;
 		this.clientUserInfoManager = clientUserInfoManager;
-		threadedLines = new LazyThreadedLineOut[256];  // FIXME HOGE_MAX
+		threadedLines = new LazyThreadedLineOut[THREAD_LINEOUT];
 		for(int i=0; i < threadedLines.length; ++i) {
 			threadedLines[i] = new LazyThreadedLineOut();
 		}

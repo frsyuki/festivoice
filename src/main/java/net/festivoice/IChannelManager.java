@@ -39,6 +39,6 @@ interface IChannelManager
 	 * @return channelNameに対応するチャンネルの情報
 	 */
 	public IChannelInfo channelData(String channelName,
-			String userName, SocketAddress userAddress);
+			String userName, InetSocketAddress userAddress);
 }
 

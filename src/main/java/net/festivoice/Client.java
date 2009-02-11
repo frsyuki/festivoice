@@ -24,11 +24,13 @@ import javax.sound.sampled.*;
 
 public class Client extends Thread
 {
+	private static final int LIMIT_TIME = 5;
+
 	private StreamSender sender;
 	private StreamReceiver receiver;
 
 	private AudioFormat format;
-	private SocketAddress serverAddress;
+	private InetSocketAddress serverAddress;
 	private TargetDataLine inputDataLine;
 
 	private ClientUserInfoManager clientUserInfoManager;
@@ -39,7 +41,7 @@ public class Client extends Thread
 	private Runnable initCallback;
 	private boolean isMicAvailable = true;
 
-	public Client(String channelName, String userName, SocketAddress serverAddress,
+	public Client(String channelName, String userName, InetSocketAddress serverAddress,
 			int mode, int quality, boolean vbr) throws Exception
 	{
 		format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 16000.0F, 16, 1, 2, 16000.0F, false);
@@ -75,6 +77,7 @@ public class Client extends Thread
 
 	public void setListenOnly(boolean flag)
 	{
+		if(!isMicAvailable) { flag = true; }
 		sender.setListenOnly(flag);
 	}
 
@@ -118,7 +121,7 @@ public class Client extends Thread
 
 		while(!endFlag) {
 			try {
-				clientUserInfoManager.stepTimeout(5);	// FIXME: LIMIT_MAX
+				clientUserInfoManager.stepTimeout(LIMIT_TIME);
 				Thread.sleep(500);
 			} catch (Exception e) {
 				e.printStackTrace();
