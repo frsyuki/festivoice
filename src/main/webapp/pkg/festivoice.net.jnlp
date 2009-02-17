@@ -4,10 +4,12 @@
 	<information>
 		<title>festivoice.net</title>
 		<vendor>festivoice developer team</vendor>
+		<!--
 		<shortcut online="true">
 			<desktop/>
 			<menu submenu="festivoice.net"/>
 		</shortcut>
+		-->
 	</information>
 
 	<security>

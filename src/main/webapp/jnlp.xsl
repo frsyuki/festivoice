@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:output encoding="UTF-8" method="xml"/>
+<xsl:output encoding="UTF-8" method="xml" cdata-section-elements="argument"/>
 <xsl:template match="/">
 <jnlp spec="1.0+" codebase="http://festivoice.net/start/">
-	<xsl:attribute name="href"><xsl:value-of select="start/channel"/></xsl:attribute>
+	<xsl:attribute name="href"><xsl:value-of select="start/channelURL"/></xsl:attribute>
 
 	<information>
 		<title>festivoice.net</title>

@@ -21,18 +21,14 @@
 					<li>おしゃべりに</li>
 					<li>IRCのお供に</li>
 				</ul>
-				<p>ユーザー登録は不要です。<a href="/pkg/festivoice.net.jnlp">festivoiceソフトウェアをダウンロード</a>して今すぐ始めよう！<a href="/pkg/festivoice.net.tar.gz">コマンドライン版</a>もあります。</p>
-				<p>festivoiceソフトウェアの動作には<a href="http://www.java.com/">Javaソフトウェア</a>が必要です。</p>
+				<p>ユーザー登録は不要です（festivoiceソフトウェアの動作には<a href="http://www.java.com/">Javaソフトウェア</a>が必要です）</p>
+				<p>festivoiceソフトウェアを<a href="/pkg/festivoice.net.jnlp">ダウンロード</a>して今すぐ始めよう！<a href="/pkg/festivoice.net.tar.gz">コマンドライン版</a>もあります。</p>
 				<ul>
 					<li><a href="/client.html">festivoice.netの使い方</a></li>
 					<li><a href="/server.html">festivoiceサーバーの導入</a></li>
 					<li><a href="http://github.com/frsyuki/festivoice/tree/master">ソースコード</a></li>
 				</ul>
-				<p><span class="new">New!</span> アンダーバー（_）から始まるチャンネル名はトップページに表示されなくなりました。秘密のチャットにご利用ください。</p>
-				<p><span class="new">New!</span> 起動時に自動的に接続しないようになりました。</p>
-				<p><span class="new">New!</span> listen onlyモードを追加しました。</p>
-				<p><span class="new">New!</span> マイクがない環境にも対応しました。</p>
-				<p><span class="new">New!</span> トップページにログが表示されるようになりました。</p>
+				<p>アンダーバー（_）から始まるチャンネル名はトップページに表示されません。秘密のチャットにご利用ください。</p>
 			</div>
 			<ul id="links">
 				<li><a href="http://partty.org/">Partty!.org</a></li>
@@ -42,8 +38,8 @@
 			<h2 id="channels_h">チャンネル一覧</h2>
 			<xsl:apply-templates select="status/channels"/>
 			<form method="get" action="#" name="startf" id="startf">
-				<input type="text" name="starti" id="starti" value="ここにチャンネル名を入力（英数字）" onblur="if(document.startf.starti.value=='') document.startf.starti.value='ここにチャンネル名を入力（英数字）'" onfocus="if(document.startf.starti.value=='ここにチャンネル名を入力（英数字）' || document.startf.starti.value=='ダウンロードしたファイルを実行してください') document.startf.starti.value='';"/>
-				<input type="submit" value="新しく始める" id="startb" onclick="var name=document.startf.starti.value; if(name=='' || name=='ここにチャンネル名を入力（英数字）' || name=='ダウンロードしたファイルを実行してください') name='-'; document.startf.starti.value='ダウンロードしたファイルを実行してください'; location.href='/start/'+name; return false;" />
+				<input type="text" name="starti" id="starti" value="ここにチャンネル名を入力" onblur="if(document.startf.starti.value=='') document.startf.starti.value='ここにチャンネル名を入力'" onfocus="if(document.startf.starti.value=='ここにチャンネル名を入力' || document.startf.starti.value=='ダウンロードしたファイルを実行してください') document.startf.starti.value='';"/>
+				<input type="submit" value="新しく始める" id="startb" onclick="var name=document.startf.starti.value; if(name=='' || name=='ここにチャンネル名を入力' || name=='ダウンロードしたファイルを実行してください') name='-'; document.startf.starti.value='ダウンロードしたファイルを実行してください'; location.href='/start/'+name; return false;" />
 			</form>
 			<xsl:apply-templates select="status/events"/>
 		</div>
@@ -69,7 +65,7 @@
 	<xsl:if test="hidden = '0'">
 		<div class="channel">
 			<h3><a>
-				<xsl:attribute name="href">/start/<xsl:value-of select="cname"/></xsl:attribute>
+				<xsl:attribute name="href">/start/<xsl:value-of select="cnameURL"/></xsl:attribute>
 				<xsl:value-of select="cname"/>
 			</a></h3>
 			<xsl:for-each select="users">
@@ -93,7 +89,7 @@
 			<xsl:if test="new = '1'"><span class="new">New!</span></xsl:if>
 			<xsl:if test="hidden = '0'">
 				<a class="channel">
-					<xsl:attribute name="href">/start/<xsl:value-of select="channel"/></xsl:attribute>
+					<xsl:attribute name="href">/start/<xsl:value-of select="channelURL"/></xsl:attribute>
 					<xsl:value-of select="channel"/></a>を作成しました。
 			</xsl:if>
 			<xsl:if test="hidden = '1'">
@@ -107,7 +103,7 @@
 				<span class="time"><xsl:value-of select="time"/></span>
 				<xsl:if test="new = '1'"><span class="new">New!</span></xsl:if>
 				<a class="channel">
-					<xsl:attribute name="href">/start/<xsl:value-of select="channel"/></xsl:attribute>
+					<xsl:attribute name="href">/start/<xsl:value-of select="channelURL"/></xsl:attribute>
 					<xsl:value-of select="channel"/></a>に<span class="user"><xsl:value-of select="user"/></span>が入室しました。
 			</li>
 		</xsl:if>

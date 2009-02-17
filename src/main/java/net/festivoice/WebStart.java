@@ -83,6 +83,7 @@ public class WebStart extends HttpServlet
 		if(channelName == null) {
 			throw new IOException("empty channel name");
 		}
+
 		if(channelName.startsWith("/")) {
 			channelName = channelName.substring(1);
 		}
@@ -97,9 +98,15 @@ public class WebStart extends HttpServlet
 		}
 
 		Element start = doc.createElement("start");
+
 		Element channel = doc.createElement("channel");
-		channel.appendChild(doc.createTextNode(channelName));
+		channel.appendChild(doc.createTextNode( channelName ));
 		start.appendChild(channel);
+
+		Element channelURL = doc.createElement("channelURL");
+		channelURL.appendChild(doc.createTextNode( URLEncoder.encode(channelName, "iso-8859-1") ));  // FIXME
+		start.appendChild(channelURL);
+
 		doc.appendChild(start);
 
 		return doc;

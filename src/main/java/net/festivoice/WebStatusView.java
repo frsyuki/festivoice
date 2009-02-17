@@ -108,6 +108,11 @@ public class WebStatusView extends HttpServlet
 
 			Element eChannelName = doc.createElement("cname");
 			eChannelName.appendChild(doc.createTextNode( channelName ));
+			eChannel.appendChild(eChannelName);
+
+			Element eChannelURL = doc.createElement("cnameURL");
+			eChannelURL.appendChild(doc.createTextNode( URLEncoder.encode(channelName, "UTF-8") ));
+			eChannel.appendChild(eChannelURL);
 
 			Element eHidden = doc.createElement("hidden");
 			eHidden.appendChild(doc.createTextNode( hidden ? "1" : "0"  ));
@@ -140,9 +145,8 @@ public class WebStatusView extends HttpServlet
 				eUser.appendChild(eAddress);
 				eUsers.appendChild(eUser);
 			}
-
-			eChannel.appendChild(eChannelName);
 			eChannel.appendChild(eUsers);
+
 			eChannels.appendChild(eChannel);
 		}
 		eStatus.appendChild(eChannels);
@@ -184,6 +188,10 @@ public class WebStatusView extends HttpServlet
 				Element eChannel = doc.createElement("channel");
 				eChannel.appendChild(doc.createTextNode( channelName ));
 				eEvent.appendChild(eChannel);
+
+				Element eChannelURL = doc.createElement("channelURL");
+				eChannelURL.appendChild(doc.createTextNode( URLEncoder.encode(channelName, "UTF-8") ));
+				eEvent.appendChild(eChannelURL);
 			}
 
 			if(userName != null) {
