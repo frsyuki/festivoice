@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 name="festivoice"
-version="0.1.0"  # FIX src/main/webapp/server.html
+version="0.2.0"  # FIX pom.xml src/main/webapp/server.html
 server="${name}d-${version}"
 src="${name}-src-${version}"
 
