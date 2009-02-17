@@ -61,21 +61,21 @@ if [ -n "$custom" ];then
 	web="$custom/webapp"
 
 	for file in "$web/pkg/festivoice.net.jnlp" "$web/jnlp.xsl" "$custom/festivoiced" "$custom/festivoice.net"; do
-		sed -i .tmp "s#festivoice.net.jnlp#$custom.jnlp#g" "$file"
-		sed -i .tmp "s#stream.festivoice.net#$custom#g" "$file"
-		sed -i .tmp "s#$webport_#$webport#g" "$file"
-		sed -i .tmp "s#$streamPort_#$streamPort#g" "$file"
-		sed -i .tmp "s#>festivoice.net</title#>$custom</title#g" "$file"
+		sed -i.tmp "s#festivoice.net.jnlp#$custom.jnlp#g" "$file"
+		sed -i.tmp "s#stream.festivoice.net#$custom#g" "$file"
+		sed -i.tmp "s#$webport_#$webport#g" "$file"
+		sed -i.tmp "s#$streamPort_#$streamPort#g" "$file"
+		sed -i.tmp "s#>festivoice.net</title#>$custom</title#g" "$file"
 		if [ "$webport" = "80" ];then
-			sed -i .tmp "s#http://festivoice.net/#http://$custom/#g" "$file"
+			sed -i.tmp "s#http://festivoice.net/#http://$custom/#g" "$file"
 		else
-			sed -i .tmp "s#http://festivoice.net/#http://$custom:$webport/#g" "$file"
+			sed -i.tmp "s#http://festivoice.net/#http://$custom:$webport/#g" "$file"
 		fi
 		rm -f "$file.tmp"
 	done
 
 	for file in "$web/index.xsl" "$web/client.html" "$web/server.html"; do
-		sed -i .tmp "s#festivoice.net#$custom#g" "$file"
+		sed -i.tmp "s#festivoice.net#$custom#g" "$file"
 		rm -f "$file.tmp"
 	done
 
